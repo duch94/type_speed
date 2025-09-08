@@ -20,10 +20,6 @@ type InputMessage struct {
 	Text string `json:"userInput"`
 }
 
-type OutputMessage struct {
-	Speed int64 `json:"speed"`
-}
-
 func handleConnections(w http.ResponseWriter, r *http.Request) {
 	// Upgrade initial GET request to a WebSocket
 	ws, err := upgrader.Upgrade(w, r, nil)
