@@ -1,4 +1,6 @@
 /*
+Downloaded from https://github.com/bigskysoftware/htmx-extensions/tree/main/src/ws
+
 WebSockets Extension
 ============================
 This extension adds support for WebSockets to htmx.  See /www/extensions/ws.md for usage instructions.

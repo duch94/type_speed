@@ -1,3 +1,5 @@
+// Downloaded from https://github.com/bigskysoftware/htmx/blob/master/src/htmx.js
+
 var htmx = (function () {
   "use strict";
 
