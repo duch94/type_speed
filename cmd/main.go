@@ -14,7 +14,7 @@ const (
 	// The port to listen on.
 	port = ":8080"
 	// The URL of the frontend.
-	frontendURL = "http://127.0.0.1:8080"
+	frontendURL = "http://127.0.0.1"
 )
 
 func main() {
@@ -27,8 +27,8 @@ func main() {
 	r.Handle("/client/*", http.StripPrefix("/client/", fs))
 	r.Handle("/ws", http.HandlerFunc(speed.HandleConnections))
 
-	slog.Info("WebSocket server started on " + frontendURL)
-	slog.Info("Client started on " + frontendURL + "/client/index.html")
+	slog.Info("WebSocket server started on " + frontendURL + port)
+	slog.Info("Client started on " + frontendURL + port + "/client/index.html")
 
 	err := http.ListenAndServe(port, r)
 	if err != nil {
