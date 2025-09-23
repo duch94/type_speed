@@ -2,28 +2,33 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
-        <title>WebSocket Client</title>
+        <title>Typing Speed Trainer</title>
+        <link rel="stylesheet" href="styles.css" />
         <script src="htmx.js"></script>
         <script src="htmx-ext-ws.js"></script>
-        <script>
-            htmx.config.wsReconnectDelay = function (retryCount) {
-                return retryCount * 1000; // return value in milliseconds
-            };
-        </script>
+        <script src="main.js" defer></script>
     </head>
     <body hx-ext="ws" ws-connect="/ws">
-        <h2>WebSocket Client</h2>
-        <a>Write to measure your typing speed</a>
-        <br /><br />
-        <input
-            type="text"
-            id="textInput"
-            name="userInput"
-            placeholder="Enter message"
-            hx-trigger="keyup"
-            ws-send
-        />
-        <br /><br />
-        <div>Measured speed: <span id="speed">0</span></div>
+        <div class="container">
+            <h2>Typing Speed Trainer</h2>
+            <p>Type the text below as fast as you can.</p>
+            <div id="textToTypeContainer">
+                <div id="textToType" hx-swap-oob="true">
+                    [Text will appear here]
+                </div>
+            </div>
+            <br />
+            <textarea
+                id="textInput"
+                name="userInput"
+                placeholder="Start typing here..."
+                hx-trigger="keyup"
+                autocomplete="off"
+                rows="5"
+                ws-send
+            ></textarea>
+            <div>Measured speed: <span id="speed">0</span> LPM</div>
+            <div id="congrats"></div>
+        </div>
     </body>
 </html>

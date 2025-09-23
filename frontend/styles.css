@@ -1,0 +1,56 @@
+body {
+    font-family: sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+}
+
+.container {
+    text-align: center;
+    background-color: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#textToTypeContainer {
+    display: flex;
+    background-color: #cccccc;
+    border: 2px;
+    border-radius: 5px;
+    border-color: #aaa;
+    border-style: solid;
+    padding: 10px;
+}
+
+#textToType {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+#congrats {
+    font-size: 2rem;
+}
+
+textarea {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    text-align: left;
+    resize: vertical;
+    box-sizing: border-box;
+}
+
+.correct {
+    color: green;
+}
+
+.incorrect {
+    color: red;
+}
