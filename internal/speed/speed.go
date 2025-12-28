@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log/slog"
+	"math/rand"
 	"net/http"
 	"strings"
 	"time"
@@ -12,12 +13,8 @@ import (
 )
 
 const (
-	// The number of characters to measure the speed after.
-	measureAfter = 5
 	// The URL of the frontend.
 	frontendURL = "http://127.0.0.1:8080"
-	// The number of seconds in a minute.
-	secondsInAMinute = 60
 )
 
 var upgrader = websocket.Upgrader{
@@ -44,8 +41,8 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 	timestamps := make([]int64, 0)
 
 	// TODO: send message with statistics after text have been written.
-	textToMeasure := "The quick brown fox jumps over the lazy dog."
-	textMsg := []byte(fmt.Sprintf("<div id=\"textToType\" hx-swap-oob=\"true\">%s</div>", textToMeasure))
+	textToMeasure := getRandomText()
+	textMsg := fmt.Appendf(nil, "<div id=\"textToType\" hx-swap-oob=\"true\">%s</div>", textToMeasure)
 	err = ws.WriteMessage(websocket.TextMessage, textMsg)
 	if err != nil {
 		slog.Error("textToType write error", "err", err)
@@ -85,7 +82,7 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 		speed := measureSpeed(timestamps)
 		slog.Info("Measured", "speed", speed, "timestamps", timestamps, "msg", parsedMsg.Text)
 		// TODO: Send errors count as well
-		outputMsg := []byte(fmt.Sprintf("<span id=\"speed\" hx-swap-oob=\"true\">%d</span>", speed))
+		outputMsg := fmt.Appendf(nil, "<span id=\"speed\" hx-swap-oob=\"true\">%d</span>", speed)
 		err = ws.WriteMessage(websocket.TextMessage, outputMsg)
 		if err != nil {
 			slog.Error("speed write error", "err", err)
@@ -109,9 +106,9 @@ func finalizeSession(ws *websocket.Conn, isSuccess bool) error {
 	failMsg := "You did too much errors, try again!"
 	template := "<span id=\"congrats\" hx-swap-oob=\"true\">%s</span>"
 
-	outputMsg := []byte(fmt.Sprintf(template, successMsg))
+	outputMsg := fmt.Appendf(nil, template, successMsg)
 	if !isSuccess {
-		outputMsg = []byte(fmt.Sprintf(template, failMsg))
+		outputMsg = fmt.Appendf(nil, template, failMsg)
 	}
 	err := ws.WriteMessage(websocket.TextMessage, outputMsg)
 	if err != nil {
@@ -119,7 +116,7 @@ func finalizeSession(ws *websocket.Conn, isSuccess bool) error {
 		return err
 	}
 
-	outputMsg = []byte(fmt.Sprintf("<div id=\"textInput\" hx-swap-oob=\"true\"></div>"))
+	outputMsg = []byte("<div id=\"textInput\" hx-swap-oob=\"true\"></div>")
 	err = ws.WriteMessage(websocket.TextMessage, outputMsg)
 	if err != nil {
 		slog.Error("final msg write error", "err", err)
@@ -131,7 +128,7 @@ func finalizeSession(ws *websocket.Conn, isSuccess bool) error {
 
 // measureSpeed calculates the typing speed in characters per minute.
 func measureSpeed(timestampsNs []int64) int64 {
-	if timestampsNs == nil || len(timestampsNs) == 0 {
+	if len(timestampsNs) == 0 {
 		return 0
 	}
 
@@ -155,4 +152,21 @@ func measureSpeed(timestampsNs []int64) int64 {
 
 	speed := 60 * time.Second / duration
 	return int64(speed)
+}
+
+func getRandomText() string {
+	textBank := []string{
+		"The quick brown fox jumps over the lazy dog while the wind blows softly through the quiet evening forest.",
+		"Typing fast requires focus, rhythm, and regular practice. Start slow, stay accurate, and your speed will naturally improve over time.",
+		"Every mistake is a lesson. Keep your hands relaxed, eyes on the screen, and trust your muscle memory.",
+		"Technology changes quickly, but good typing skills remain useful for work, study, and everyday communication.",
+		"Consistency matters more than talent. Ten minutes of daily typing can bring better results than long sessions once a week.",
+		"In 2024, I practiced typing for 15 minutes a day and increased my speed from 42 to 68 words per minute.",
+		"The meeting starts at 9:30, ends at 11:45, and includes 3 main topics and 12 action items.",
+		"She bought 2 monitors, 1 keyboard, and 5 cables for $120, saving 20% during the sale.",
+		"Version 3.1.4 was released after 27 tests, 8 bug fixes, and 0 critical errors.",
+		"Room 404 is on floor 7, code 9832 opens the door, and the timer locks it again after 60 seconds.",
+	}
+	randomIndex := rand.Intn(len(textBank))
+	return textBank[randomIndex]
 }
